@@ -21,7 +21,7 @@ public class Immortal extends Thread {
 
     boolean life = false;
         
-
+    boolean stop = false;
     public Immortal(String name, List<Immortal> immortalsPopulation, int health, int defaultDamageValue, ImmortalUpdateReportCallback ucb) {
         super(name);
         this.updateCallback=ucb;
@@ -32,8 +32,19 @@ public class Immortal extends Thread {
     }
 
     public void run() {
-
+        
         while (true) {
+            if(health == 0){
+                synchronized(immortalsPopulation){
+                    immortalsPopulation.remove(this);
+                }
+                
+                
+                break;
+            }
+            if(stop){
+                break;
+            }
             if(life){
                 try {
                     this.pausa(this);
@@ -41,28 +52,28 @@ public class Immortal extends Thread {
                     Logger.getLogger(Immortal.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
-            Immortal im;
+            else{
+                Immortal im;
 
-            int myIndex = immortalsPopulation.indexOf(this);
+                int myIndex = immortalsPopulation.indexOf(this);
 
-            int nextFighterIndex = r.nextInt(immortalsPopulation.size());
+                int nextFighterIndex = r.nextInt(immortalsPopulation.size());
 
-            //avoid self-fight
-            if (nextFighterIndex == myIndex) {
-                nextFighterIndex = ((nextFighterIndex + 1) % immortalsPopulation.size());
+                //avoid self-fight
+                if (nextFighterIndex == myIndex) {
+                    nextFighterIndex = ((nextFighterIndex + 1) % immortalsPopulation.size());
+                }
+
+                im = immortalsPopulation.get(nextFighterIndex);
+
+                this.fight(im);
+
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-
-            im = immortalsPopulation.get(nextFighterIndex);
-            
-            this.fight(im);
-
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
         }
 
     }
@@ -76,6 +87,7 @@ public class Immortal extends Thread {
                         this.health += defaultDamageValue;
                         updateCallback.processReport("Fight: " + this + " vs " + i2+"\n");
                     } else {
+                        updateCallback.processReport("--------------DEADTO--------------- "+ this.name +"\n");
                         updateCallback.processReport(this + " says:" + i2 + " is already dead!\n");
                     }
                 }
@@ -87,8 +99,10 @@ public class Immortal extends Thread {
                     if (i2.getHealth() > 0) {
                         i2.changeHealth(i2.getHealth() - defaultDamageValue);
                         this.health += defaultDamageValue;
+                       
                         updateCallback.processReport("Fight: " + this + " vs " + i2+"\n");
                     } else {
+                        updateCallback.processReport("--------------DEADTO--------------- "+ this.name +"\n");
                         updateCallback.processReport(this + " says:" + i2 + " is already dead!\n");
                     }
                 }
@@ -96,8 +110,8 @@ public class Immortal extends Thread {
         }
     }
     
+   
     public void pausa(Immortal i) throws InterruptedException{
-      
         synchronized(immortalsPopulation){
             immortalsPopulation.wait();
         }
@@ -105,7 +119,6 @@ public class Immortal extends Thread {
     
     public void resumen(){
         synchronized(immortalsPopulation){
-          
             immortalsPopulation.notifyAll();
         }
     }
@@ -130,6 +143,10 @@ public class Immortal extends Thread {
 
     public void setLife(boolean life) {
         this.life = life;
+    }
+
+    public void setStop(boolean stop) {
+        this.stop = stop;
     }
     
     
