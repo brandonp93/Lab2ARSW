@@ -1,0 +1,37 @@
+Brandon Prieto
+Daniel Moreno
+
+Parte 1.
+
+- Revise el funcionamiento del programa y ejecútelo. Mientras esto ocurren, ejecute jVisualVM y revise el consumo de CPU del 
+  proceso correspondiente. A qué se debe este consumo?, cual es la clase responsable?
+
+	  El consumo de CPU es debido a que el Consumer siempre esta mirando y pregunta si
+	  hay algo que consumir, por lo que se genera un consumo de CPU alto.
+
+
+
+Parte 3.
+
+- Revise el código e identifique cómo se implemento la funcionalidad antes indicada. Dada la intención del juego, 
+  un invariante debería ser que la sumatoria de los puntos de vida de todos los jugadores siempre sea el mismo(claro está, 
+  en un instante de tiempo en el que no esté en proceso una operación de incremento/reducción de tiempo). 
+  Para este caso, para N jugadores, cual debería ser este valor?.
+	
+		El valor deberia ser N*100. 
+
+
+- Ejecute la aplicación y verifique cómo funcionan las opción ‘pause and check’. Se cumple el invariante?.
+
+	  El invariante no se cumple, ya que despues de cada 'pause and check' el invariante cambia
+
+-  Se cumple o no el invariante?. (Despues del punto 4)	
+
+	  El invariante ya se cumple.
+
+- Analizando el esquema de funcionamiento de la simulación, esto podría crear una condición de carrera? 
+  Implemente la funcionalidad, ejecute la simulación y observe qué problema se presenta cuando hay muchos 'inmortales' en la misma.
+  Escriba sus conclusiones.
+  
+	
+	
