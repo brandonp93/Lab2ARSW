@@ -1,9 +1,9 @@
 package edu.eci.arsw.highlandersim;
 
-import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Immortal extends Thread {
 
@@ -13,7 +13,7 @@ public class Immortal extends Thread {
     
     private int defaultDamageValue;
 
-    private final List<Immortal> immortalsPopulation;
+    private final CopyOnWriteArrayList<Immortal> immortalsPopulation;
 
     private final String name;
 
@@ -22,7 +22,7 @@ public class Immortal extends Thread {
     boolean life = false;
         
     boolean stop = false;
-    public Immortal(String name, List<Immortal> immortalsPopulation, int health, int defaultDamageValue, ImmortalUpdateReportCallback ucb) {
+    public Immortal(String name, CopyOnWriteArrayList<Immortal> immortalsPopulation, int health, int defaultDamageValue, ImmortalUpdateReportCallback ucb) {
         super(name);
         this.updateCallback=ucb;
         this.name = name;
@@ -33,13 +33,9 @@ public class Immortal extends Thread {
 
     public void run() {
         
-        while (true) {
+        while (true) {    
             if(health == 0){
-                synchronized(immortalsPopulation){
-                    immortalsPopulation.remove(this);
-                }
-                
-                
+                immortalsPopulation.remove(this);
                 break;
             }
             if(stop){
@@ -87,7 +83,6 @@ public class Immortal extends Thread {
                         this.health += defaultDamageValue;
                         updateCallback.processReport("Fight: " + this + " vs " + i2+"\n");
                     } else {
-                        updateCallback.processReport("--------------DEADTO--------------- "+ this.name +"\n");
                         updateCallback.processReport(this + " says:" + i2 + " is already dead!\n");
                     }
                 }
@@ -102,7 +97,7 @@ public class Immortal extends Thread {
                        
                         updateCallback.processReport("Fight: " + this + " vs " + i2+"\n");
                     } else {
-                        updateCallback.processReport("--------------DEADTO--------------- "+ this.name +"\n");
+   
                         updateCallback.processReport(this + " says:" + i2 + " is already dead!\n");
                     }
                 }
@@ -133,7 +128,6 @@ public class Immortal extends Thread {
 
     @Override
     public String toString() {
-
         return name + "[" + health + "]";
     }
 
