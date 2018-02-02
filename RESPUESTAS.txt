@@ -33,5 +33,6 @@ Parte 3.
   Implemente la funcionalidad, ejecute la simulación y observe qué problema se presenta cuando hay muchos 'inmortales' en la misma.
   Escriba sus conclusiones.
   
+  Si ya que cuando se remueve un immortal de la lista puede que otro immortal ya lo haya seleccionado para pelear, y aca es donde se crea la condición de carrera
 	
 	
